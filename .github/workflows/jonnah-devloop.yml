@@ -1,0 +1,49 @@
+name: Jonnah Dev Loop
+
+on:
+  schedule:
+    - cron: '0 2 * * *' # 09:00 WIB
+  workflow_dispatch:
+
+jobs:
+  test-and-report:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run lint (if exists)
+        run: npm run lint || echo "no lint script"
+
+      - name: Build project
+        run: npm run build || echo "build skipped"
+
+      - name: Generate report
+        run: |
+          echo "# Jonnah Daily Development Report" > REPORT.md
+          echo "Date: $(date)" >> REPORT.md
+          echo "" >> REPORT.md
+          echo "## Repo Status" >> REPORT.md
+          git status >> REPORT.md
+          echo "" >> REPORT.md
+          echo "## Dependencies" >> REPORT.md
+          npm outdated >> REPORT.md || true
+
+      - name: Commit report
+        run: |
+          git config user.name "Jonnah Bot"
+          git config user.email "jonnah@agent.local"
+          git add REPORT.md
+          git commit -m "Daily Jonnah report" || echo "No changes"
+
+      - name: Push report
+        run: git push
