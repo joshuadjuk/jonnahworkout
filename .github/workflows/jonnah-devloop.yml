@@ -2,7 +2,7 @@ name: Jonnah Dev Loop
 
 on:
   schedule:
-    - cron: '0 2 * * *' # 09:00 WIB
+    - cron: '0 */2 * * *' # every 2 hours
   workflow_dispatch:
 
 jobs:
