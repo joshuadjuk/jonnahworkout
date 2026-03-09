@@ -1,0 +1,53 @@
+name: Jonnah AI Dev System
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ai-dev:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install deps
+        run: npm install || true
+
+      - name: Generate Feature Ideas
+        run: |
+          mkdir -p .jonnah
+          echo "# Feature Ideas" > .jonnah/FEATURES.md
+          echo "Generated: $(date)" >> .jonnah/FEATURES.md
+          echo "- Improve Jemaat search and filtering" >> .jonnah/FEATURES.md
+          echo "- Add attendance tracking module" >> .jonnah/FEATURES.md
+          echo "- Add role-based admin permissions" >> .jonnah/FEATURES.md
+
+      - name: Generate Issues File
+        run: |
+          echo "# Detected Improvement Opportunities" > .jonnah/ISSUES.md
+          echo "Generated: $(date)" >> .jonnah/ISSUES.md
+          echo "- Refactor API request handling" >> .jonnah/ISSUES.md
+          echo "- Add centralized API client" >> .jonnah/ISSUES.md
+          echo "- Improve error handling" >> .jonnah/ISSUES.md
+
+      - name: Simulate Code Improvement
+        run: |
+          echo "// Jonnah improvement marker $(date)" >> src/App.tsx
+
+      - name: Commit Changes
+        run: |
+          git config user.name "Jonnah AI"
+          git config user.email "jonnah@ai.local"
+          git add .
+          git commit -m "jonnah: ai dev loop update" || echo "no changes"
+
+      - name: Push
+        run: git push
